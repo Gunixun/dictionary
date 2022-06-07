@@ -1,26 +1,23 @@
 package gunixun.dictionary.ui.translation
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import gunixun.dictionary.domain.TranslationRepo
-import gunixun.dictionary.domain.entities.DataModel
 import gunixun.dictionary.ui.utils.AppState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class TranslationPresenter(
+class TranslationViewModel(
     private val translationRepo: TranslationRepo
-) : TranslationContract.TranslationPresenterInterface {
+): TranslationContract.TranslationViewModel() {
+    override val data: MutableLiveData<AppState> = MutableLiveData<AppState>()
 
-    private var currentView: TranslationContract.TranslationViewInterface? = null
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    override fun onAttachView(view: TranslationContract.TranslationViewInterface) {
-        currentView = view
-    }
-
     override fun findWord(word: String) {
-        currentView?.renderData(AppState.Loading)
+        data.postValue(AppState.Loading)
         compositeDisposable.add(
             translationRepo
                 .getData(word)
@@ -28,19 +25,17 @@ class TranslationPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                     onSuccess = {
-                        currentView?.renderData(AppState.Success(it))
+                        data.postValue(AppState.Success(it))
                     },
                     onError = {
-                        currentView?.renderData(AppState.Error(it))
+                        data.postValue(AppState.Error(it))
                     }
                 )
         )
     }
 
-    override fun onDetachView(view: TranslationContract.TranslationViewInterface) {
+    override fun onCleared() {
         compositeDisposable.clear()
-        if (view == currentView) {
-            currentView = null
-        }
+        super.onCleared()
     }
 }

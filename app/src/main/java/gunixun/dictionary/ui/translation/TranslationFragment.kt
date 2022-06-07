@@ -5,10 +5,10 @@ import android.view.View
 import android.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import gunixun.dictionary.data.mock.MockTranslationRepoImpl
 import gunixun.dictionary.databinding.FragmentTranslationBinding
 import gunixun.dictionary.ui.BaseFragment
 import gunixun.dictionary.ui.utils.AppState
+import org.koin.android.ext.android.inject
 
 class TranslationFragment :
     BaseFragment<FragmentTranslationBinding>(FragmentTranslationBinding::inflate),
@@ -16,7 +16,7 @@ class TranslationFragment :
 {
 
     private lateinit var adapter: TranslationAdapter
-    private var presenter: TranslationContract.TranslationPresenterInterface? = null
+    private val presenter: TranslationContract.TranslationPresenterInterface by inject()
 
     companion object {
         fun newInstance() = TranslationFragment()
@@ -24,9 +24,7 @@ class TranslationFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
-        presenter = TranslationPresenter(MockTranslationRepoImpl())
-        presenter?.onAttachView(this)
+        presenter.onAttachView(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,7 +48,7 @@ class TranslationFragment :
     private fun connectSignals() {
         binding.wordSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                presenter?.findWord(query)
+                presenter.findWord(query)
                 return true
             }
             override fun onQueryTextChange(newText: String): Boolean {
@@ -77,7 +75,7 @@ class TranslationFragment :
     }
 
     override fun onDestroy() {
-        presenter?.onDetachView(this)
+        presenter.onDetachView(this)
         super.onDestroy()
     }
 

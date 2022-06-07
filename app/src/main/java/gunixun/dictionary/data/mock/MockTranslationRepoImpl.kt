@@ -5,7 +5,7 @@ import gunixun.dictionary.domain.entities.DataModel
 import gunixun.dictionary.domain.entities.Meaning
 import io.reactivex.rxjava3.core.Single
 
-class MockTranslationRepoImpl : TranslationRepo<List<DataModel>> {
+class MockTranslationRepoImpl : TranslationRepo {
 
 
     private val data: List<DataModel> = listOf(

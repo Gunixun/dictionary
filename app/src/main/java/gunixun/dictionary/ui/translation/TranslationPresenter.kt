@@ -9,7 +9,7 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class TranslationPresenter(
-    private val translationRepo: TranslationRepo<List<DataModel>>
+    private val translationRepo: TranslationRepo
 ) : TranslationContract.TranslationPresenterInterface {
 
     private var currentView: TranslationContract.TranslationViewInterface? = null

@@ -1,16 +1,13 @@
 package gunixun.dictionary.ui.translation
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import gunixun.dictionary.ui.utils.AppState
 
 class TranslationContract {
 
-    interface TranslationViewInterface {
-        fun renderData(appState: AppState)
-    }
-
-    interface TranslationPresenterInterface {
-        fun onAttachView(view: TranslationViewInterface)
-        fun onDetachView(view: TranslationViewInterface)
-        fun findWord(word: String)
+    abstract class TranslationViewModel: ViewModel() {
+        abstract val data : LiveData<AppState>
+        abstract  fun findWord(word: String)
     }
 }

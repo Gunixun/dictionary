@@ -13,26 +13,21 @@ import gunixun.dictionary.ui.utils.AppState
 import gunixun.dictionary.ui.utils.createErrSnackBar
 import gunixun.dictionary.ui.utils.createMsgSnackBar
 import gunixun.dictionary.ui.utils.hideSnackBar
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class TranslationFragment :
-    BaseFragment<FragmentTranslationBinding>(FragmentTranslationBinding::inflate),
-    TranslationContract.TranslationViewInterface
+    BaseFragment<FragmentTranslationBinding>(FragmentTranslationBinding::inflate)
 {
 
     private lateinit var adapter: TranslationAdapter
-    private val presenter: TranslationContract.TranslationPresenterInterface by inject()
+    private val viewModel: TranslationContract.TranslationViewModel by viewModel()
 
     private var retryIter: Int = 0
     private var snackBar: Snackbar? = null
 
     companion object {
         fun newInstance() = TranslationFragment()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        presenter.onAttachView(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,16 +51,20 @@ class TranslationFragment :
     private fun connectSignals() {
         binding.wordSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                presenter.findWord(query)
+                viewModel.findWord(query)
                 return true
             }
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
             }
         })
+
+        viewModel.data.observe(viewLifecycleOwner) { state ->
+            renderData(state)
+        }
     }
 
-    override fun renderData(appState: AppState) {
+    private fun renderData(appState: AppState) {
         binding.progressBar.isVisible = false
         binding.emptyTextView.isVisible = false
         when (appState) {
@@ -86,7 +85,7 @@ class TranslationFragment :
                     snackBar = binding.root.createErrSnackBar(
                         text = appState.error.toString(),
                         actionText = R.string.retry,
-                        { presenter.findWord(binding.wordSearchView.query.toString()) }
+                        { viewModel.findWord(binding.wordSearchView.query.toString()) }
                     )
                     snackBar?.show()
                 } else {
@@ -97,11 +96,6 @@ class TranslationFragment :
                 retryIter++
             }
         }
-    }
-
-    override fun onDestroy() {
-        presenter.onDetachView(this)
-        super.onDestroy()
     }
 
 }

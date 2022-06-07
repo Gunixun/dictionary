@@ -4,7 +4,8 @@ import gunixun.dictionary.data.retrofit.SkyEngApi
 import gunixun.dictionary.data.retrofit.SkyEngTranslationRepoImpl
 import gunixun.dictionary.domain.TranslationRepo
 import gunixun.dictionary.ui.translation.TranslationContract
-import gunixun.dictionary.ui.translation.TranslationPresenter
+import org.koin.androidx.viewmodel.dsl.viewModel
+import gunixun.dictionary.ui.translation.TranslationViewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Converter
@@ -29,5 +30,5 @@ val appModule = module {
 
     single<TranslationRepo> { SkyEngTranslationRepoImpl(get()) }
 
-    single<TranslationContract.TranslationPresenterInterface> { TranslationPresenter(get()) }
+    viewModel<TranslationContract.TranslationViewModel> { TranslationViewModel(get()) }
 }

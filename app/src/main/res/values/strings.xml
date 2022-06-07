@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Dictionary</string>
+    <string name="empty">Данные отсутствуют</string>
 </resources>

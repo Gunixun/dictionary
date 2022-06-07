@@ -4,14 +4,23 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import gunixun.dictionary.R
+import gunixun.dictionary.databinding.ActivityMainBinding
+import gunixun.dictionary.ui.translation.TranslationFragment
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        if (savedInstanceState == null) {
+            setHomePage()
+        }
     }
 
-    fun navigationTo(fragment: Fragment, withTransaction: Boolean) {
+    private fun navigationTo(fragment: Fragment, withTransaction: Boolean = false) {
         val transaction = supportFragmentManager
             .beginTransaction()
             .setCustomAnimations(
@@ -27,5 +36,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         transaction.commit()
+    }
+
+    private fun setHomePage() {
+        navigationTo(TranslationFragment.newInstance())
     }
 }

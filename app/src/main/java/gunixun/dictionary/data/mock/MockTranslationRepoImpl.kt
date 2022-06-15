@@ -3,7 +3,6 @@ package gunixun.dictionary.data.mock
 import gunixun.dictionary.domain.TranslationRepo
 import gunixun.dictionary.domain.entities.DataModel
 import gunixun.dictionary.domain.entities.Meaning
-import io.reactivex.rxjava3.core.Single
 
 class MockTranslationRepoImpl : TranslationRepo {
 
@@ -26,5 +25,5 @@ class MockTranslationRepoImpl : TranslationRepo {
         ))
     )
 
-    override fun getData(word: String) = Single.just(data)
+    override suspend fun getData(word: String) = data
 }

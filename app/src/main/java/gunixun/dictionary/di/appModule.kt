@@ -6,6 +6,8 @@ import gunixun.dictionary.domain.TranslationRepo
 import gunixun.dictionary.ui.translation.TranslationContract
 import org.koin.androidx.viewmodel.dsl.viewModel
 import gunixun.dictionary.ui.translation.TranslationViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Converter
@@ -30,5 +32,6 @@ val appModule = module {
 
     single<TranslationRepo> { SkyEngTranslationRepoImpl(get()) }
 
-    viewModel<TranslationContract.TranslationViewModel> { TranslationViewModel(get()) }
+    factory { CoroutineScope(Dispatchers.Default) }
+    viewModel<TranslationContract.TranslationViewModel> { TranslationViewModel(get(), get()) }
 }

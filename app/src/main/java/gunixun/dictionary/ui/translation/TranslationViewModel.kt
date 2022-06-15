@@ -1,41 +1,39 @@
 package gunixun.dictionary.ui.translation
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import gunixun.dictionary.domain.TranslationRepo
 import gunixun.dictionary.ui.utils.AppState
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.kotlin.subscribeBy
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.*
 
 class TranslationViewModel(
-    private val translationRepo: TranslationRepo
-): TranslationContract.TranslationViewModel() {
+    private val translationRepo: TranslationRepo,
+    private val scope: CoroutineScope,
+) : TranslationContract.TranslationViewModel() {
     override val data: MutableLiveData<AppState> = MutableLiveData<AppState>()
 
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var job: Job? = null
 
     override fun findWord(word: String) {
         data.postValue(AppState.Loading)
-        compositeDisposable.add(
-            translationRepo
-                .getData(word)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(
-                    onSuccess = {
-                        data.postValue(AppState.Success(it))
-                    },
-                    onError = {
-                        data.postValue(AppState.Error(it))
+
+        if (job?.isActive == true) {
+            job?.cancel()
+        }
+        job = scope.launch() {
+            try {
+                withContext(Dispatchers.IO) {
+                    translationRepo.getData(word).let { result ->
+                        data.postValue(AppState.Success(result))
                     }
-                )
-        )
+                }
+            } catch (e: Throwable) {
+                data.postValue(AppState.Error(e))
+            }
+        }
     }
 
     override fun onCleared() {
-        compositeDisposable.clear()
+        scope.cancel()
         super.onCleared()
     }
 }

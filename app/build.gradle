@@ -38,14 +38,10 @@ android {
 dependencies {
 
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
-
-    // Rx
-    implementation "io.reactivex.rxjava3:rxjava:3.1.4"
-    implementation "io.reactivex.rxjava3:rxkotlin:3.0.1"
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    def retrofit_version = "2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_version"
 
     //koin
     implementation "io.insert-koin:koin-android:3.2.0-beta-1"

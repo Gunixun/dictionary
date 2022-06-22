@@ -15,13 +15,15 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
+const val apiUrl = "api_url"
+
 val appModule = module {
 
-    single<String>(named("api_url")) { "https://dictionary.skyeng.ru/api/public/v1/" }
+    single<String>(named(apiUrl)) { "https://dictionary.skyeng.ru/api/public/v1/" }
 
     single {
         Retrofit.Builder()
-            .baseUrl(get<String>(named("api_url")))
+            .baseUrl(get<String>(named(apiUrl)))
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(get())
             .build()
@@ -30,8 +32,12 @@ val appModule = module {
 
     single<SkyEngApi> { get<Retrofit>().create(SkyEngApi::class.java) }
 
-    single<TranslationRepo> { SkyEngTranslationRepoImpl(get()) }
+    single<TranslationRepo> { SkyEngTranslationRepoImpl(api = get()) }
 
-    factory { CoroutineScope(Dispatchers.Default) }
-    viewModel<TranslationContract.TranslationViewModel> { TranslationViewModel(get(), get()) }
+    viewModel<TranslationContract.TranslationViewModel> {
+        TranslationViewModel(
+            translationRepo = get(),
+            scope = CoroutineScope(Dispatchers.Default)
+        )
+    }
 }

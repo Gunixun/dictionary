@@ -1,39 +1,27 @@
 package gunixun.dictionary.ui.translation
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import gunixun.dictionary.domain.TranslationRepo
 import gunixun.dictionary.ui.utils.AppState
 import kotlinx.coroutines.*
 
 class TranslationViewModel(
     private val translationRepo: TranslationRepo,
-    private val scope: CoroutineScope,
 ) : TranslationContract.TranslationViewModel() {
-    override val data: MutableLiveData<AppState> = MutableLiveData<AppState>()
-
-    private var job: Job? = null
+    override val data: LiveData<AppState> = _liveData
 
     override fun findWord(word: String) {
-        data.postValue(AppState.Loading)
+        _liveData.postValue(AppState.Loading)
 
-        if (job?.isActive == true) {
-            job?.cancel()
-        }
-        job = scope.launch() {
-            try {
-                withContext(Dispatchers.IO) {
-                    translationRepo.getData(word).let { result ->
-                        data.postValue(AppState.Success(result))
-                    }
-                }
-            } catch (e: Throwable) {
-                data.postValue(AppState.Error(e))
-            }
-        }
+        cancelJob()
+        scope.launch { startFind(word) }
     }
 
-    override fun onCleared() {
-        scope.cancel()
-        super.onCleared()
+    private suspend fun startFind(word: String) = withContext(Dispatchers.IO) {
+        _liveData.postValue(AppState.Success(translationRepo.getData(word)))
+    }
+
+    override fun handleError(error: Throwable) {
+        _liveData.postValue(AppState.Error(error))
     }
 }

@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val apiUrl = "api_url"
 
-val appModule = module {
+val application = module {
 
     single<String>(named(apiUrl)) { "https://dictionary.skyeng.ru/api/public/v1/" }
 
@@ -33,11 +33,13 @@ val appModule = module {
     single<SkyEngApi> { get<Retrofit>().create(SkyEngApi::class.java) }
 
     single<TranslationRepo> { SkyEngTranslationRepoImpl(api = get()) }
+}
+
+val mainScreen = module {
 
     viewModel<TranslationContract.TranslationViewModel> {
         TranslationViewModel(
-            translationRepo = get(),
-            scope = CoroutineScope(Dispatchers.Default)
+            translationRepo = get()
         )
     }
 }

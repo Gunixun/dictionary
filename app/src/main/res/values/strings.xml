@@ -4,4 +4,6 @@
     <string name="retry">Повторить</string>
     <string name="fall_load_data">Не удалось загрузить данные</string>
     <string name="preview_icon">Иконка предпросмотра</string>
+    <string name="home">Home</string>
+    <string name="history">History</string>
 </resources>

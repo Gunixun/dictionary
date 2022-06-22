@@ -47,6 +47,21 @@ class MainActivity :
         navigationTo(TranslationFragment.newInstance())
     }
 
+    private fun initBottomNavigationView() {
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.bottom_view_home -> {
+                    setHomePage()
+                    true
+                }
+                R.id.bottom_view_history -> {
+                    true
+                }
+                else -> true
+            }
+        }
+    }
+
     override fun openTranslationDetailsScreen(data: DataModel) {
         navigationTo(TranslationDetailsFragment.newInstance(data), true)
     }

@@ -5,9 +5,14 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import gunixun.dictionary.R
 import gunixun.dictionary.databinding.ActivityMainBinding
+import gunixun.dictionary.domain.entities.DataModel
 import gunixun.dictionary.ui.translation.TranslationFragment
+import gunixun.dictionary.ui.translation_details.TranslationDetailsFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity :
+    AppCompatActivity(),
+    TranslationFragment.Controller
+{
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,5 +45,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setHomePage() {
         navigationTo(TranslationFragment.newInstance())
+    }
+
+    override fun openTranslationDetailsScreen(data: DataModel) {
+        navigationTo(TranslationDetailsFragment.newInstance(data), true)
     }
 }

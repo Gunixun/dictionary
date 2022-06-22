@@ -20,7 +20,7 @@ class TranslationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 
-    fun bind(data: DataModel) {
+    fun bind(data: DataModel, listener: (DataModel) -> Unit) {
 
         val strBuilder = StringBuilder()
         for (i in 0 until data.meanings.size) {
@@ -33,6 +33,9 @@ class TranslationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         FragmentTranslationItemBinding.bind(itemView).apply {
             translationTextView.text = data.text
             meaningsTextView.text = strBuilder.toString()
+            itemView.setOnClickListener {
+                listener.invoke(data)
+            }
         }
     }
 }

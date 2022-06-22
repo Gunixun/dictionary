@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import gunixun.dictionary.domain.entities.DataModel
 
-class TranslationAdapter() : RecyclerView.Adapter<TranslationViewHolder>() {
+class TranslationAdapter(
+    private val itemClickCallback: (DataModel) -> Unit
+) : RecyclerView.Adapter<TranslationViewHolder>() {
 
     private var listData: MutableList<DataModel> = arrayListOf()
 
@@ -23,7 +25,7 @@ class TranslationAdapter() : RecyclerView.Adapter<TranslationViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TranslationViewHolder, position: Int) {
-        holder.bind(listData[position])
+        holder.bind(listData[position], itemClickCallback)
     }
 
     override fun getItemCount() = listData.size

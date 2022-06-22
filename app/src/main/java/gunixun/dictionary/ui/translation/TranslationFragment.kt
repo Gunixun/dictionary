@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import gunixun.dictionary.R
 import gunixun.dictionary.databinding.FragmentTranslationBinding
+import gunixun.dictionary.domain.entities.DataModel
 import gunixun.dictionary.ui.BaseFragment
 import gunixun.dictionary.ui.utils.AppState
 import gunixun.dictionary.ui.utils.createErrSnackBar
@@ -22,12 +23,17 @@ class TranslationFragment :
 
     private lateinit var adapter: TranslationAdapter
     private val viewModel: TranslationContract.TranslationViewModel by viewModel()
+    private val controller by lazy { activity as Controller }
 
     private var retryIter: Int = 0
     private var snackBar: Snackbar? = null
 
     companion object {
         fun newInstance() = TranslationFragment()
+    }
+
+    interface Controller {
+        fun openTranslationDetailsScreen(data: DataModel)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,7 +44,9 @@ class TranslationFragment :
     }
 
     private fun setupUi() {
-        adapter = TranslationAdapter()
+        adapter = TranslationAdapter {
+            controller.openTranslationDetailsScreen(it)
+        }
         binding.recyclerView.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,

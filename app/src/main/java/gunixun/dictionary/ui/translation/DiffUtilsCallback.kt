@@ -18,7 +18,7 @@ class DiffUtilsCallback (
     }
 
     override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean {
-        val oldItem = oldItems[newPos]
+        val oldItem = oldItems[oldPos]
         val newItem = newItems[newPos]
         return oldItem.text == newItem.text
                 && oldItem.meanings == newItem.meanings

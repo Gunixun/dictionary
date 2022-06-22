@@ -10,7 +10,9 @@ class TranslationAdapter() : RecyclerView.Adapter<TranslationViewHolder>() {
     private var listData: MutableList<DataModel> = arrayListOf()
 
     fun setData(data: List<DataModel>) {
-        val diffResult = DiffUtil.calculateDiff(DiffUtilsCallback(listData, data))
+        val diffResult = DiffUtil.calculateDiff(
+            DiffUtilsCallback(newItems = data, oldItems = listData)
+        )
         diffResult.dispatchUpdatesTo(this)
         listData.clear()
         listData.addAll(data)

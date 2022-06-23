@@ -2,6 +2,7 @@ package gunixun.dictionary
 
 import android.app.Application
 import gunixun.dictionary.di.application
+import gunixun.dictionary.di.historyScreen
 import gunixun.dictionary.di.mainScreen
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -16,7 +17,7 @@ class App : Application() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(listOf(application, mainScreen))
+            modules(listOf(application, mainScreen, historyScreen))
         }
     }
 }

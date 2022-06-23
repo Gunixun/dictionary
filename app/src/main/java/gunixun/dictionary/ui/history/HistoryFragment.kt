@@ -1,35 +1,28 @@
-package gunixun.dictionary.ui.translation
+package gunixun.dictionary.ui.history
 
 import android.os.Bundle
 import android.view.View
-import android.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import gunixun.dictionary.R
-import gunixun.dictionary.databinding.FragmentTranslationBinding
-import gunixun.dictionary.domain.entities.DataModel
+import gunixun.dictionary.databinding.FragmentHistoryBinding
 import gunixun.dictionary.ui.BaseFragment
 import gunixun.dictionary.ui.utils.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class TranslationFragment :
-    BaseFragment<FragmentTranslationBinding>(FragmentTranslationBinding::inflate) {
-
-    private lateinit var adapter: TranslationAdapter
-    private val viewModel: TranslationContract.TranslationViewModel by viewModel()
-    private val controller by lazy { activity as Controller }
+class HistoryFragment :
+    BaseFragment<FragmentHistoryBinding>(FragmentHistoryBinding::inflate)
+{
+    private lateinit var adapter: HistoryAdapter
+    private val viewModel: HistoryContract.HistoryViewModel by viewModel()
 
     private var retryIter: Int = RESET_RETRY_ITER
     private var snackBar: Snackbar? = null
 
     companion object {
-        fun newInstance() = TranslationFragment()
-    }
-
-    interface Controller {
-        fun openTranslationDetailsScreen(data: DataModel)
+        fun newInstance() = HistoryFragment()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,33 +30,21 @@ class TranslationFragment :
 
         setupUi()
         connectSignals()
+
+        viewModel.getAll()
     }
 
     private fun setupUi() {
-        adapter = TranslationAdapter {
-            controller.openTranslationDetailsScreen(it)
-        }
+        adapter = HistoryAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,
             false
         )
         binding.recyclerView.adapter = adapter
-
     }
 
     private fun connectSignals() {
-        binding.wordSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                viewModel.findWord(query)
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                return false
-            }
-        })
-
         viewModel.data.observe(viewLifecycleOwner) { state ->
             renderData(state)
         }
@@ -77,7 +58,7 @@ class TranslationFragment :
                 hideSnackBar(snackBar)
                 binding.progressBar.isVisible = true
             }
-            is AppState.Success -> {
+            is AppState.SuccessHistory -> {
                 retryIter = RESET_RETRY_ITER
                 if (appState.data.isEmpty()) {
                     binding.emptyTextView.isVisible = true
@@ -90,7 +71,7 @@ class TranslationFragment :
                     snackBar = binding.root.createErrSnackBar(
                         text = appState.error.toString(),
                         actionText = R.string.retry,
-                        { viewModel.findWord(binding.wordSearchView.query.toString()) }
+                        { viewModel.getAll() }
                     )
                     snackBar?.show()
                 } else {
@@ -103,5 +84,4 @@ class TranslationFragment :
             else -> {}
         }
     }
-
 }

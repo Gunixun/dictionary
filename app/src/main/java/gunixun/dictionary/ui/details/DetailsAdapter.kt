@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import gunixun.dictionary.domain.entities.Meaning
 
-class DetailsAdapter() : RecyclerView.Adapter<TranslationDetailsViewHolder>() {
+class DetailsAdapter() : RecyclerView.Adapter<DetailsViewHolder>() {
 
     private var listData: MutableList<Meaning> = arrayListOf()
 
@@ -14,11 +14,11 @@ class DetailsAdapter() : RecyclerView.Adapter<TranslationDetailsViewHolder>() {
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TranslationDetailsViewHolder {
-        return TranslationDetailsViewHolder.createView(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailsViewHolder {
+        return DetailsViewHolder.createView(parent)
     }
 
-    override fun onBindViewHolder(holder: TranslationDetailsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DetailsViewHolder, position: Int) {
         holder.bind(listData[position])
     }
 

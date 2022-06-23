@@ -10,16 +10,16 @@ import gunixun.dictionary.domain.entities.Meaning
 
 const val httpsString = "https:"
 
-class TranslationDetailsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class DetailsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
-        fun createView(parent: ViewGroup): TranslationDetailsViewHolder {
+        fun createView(parent: ViewGroup): DetailsViewHolder {
             val binding = FragmentDetailsItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             )
-            return TranslationDetailsViewHolder(binding.root)
+            return DetailsViewHolder(binding.root)
         }
     }
 

@@ -7,7 +7,8 @@ import gunixun.dictionary.R
 import gunixun.dictionary.databinding.ActivityMainBinding
 import gunixun.dictionary.domain.entities.DataModel
 import gunixun.dictionary.ui.translation.TranslationFragment
-import gunixun.dictionary.ui.translation_details.TranslationDetailsFragment
+import gunixun.dictionary.ui.details.DetailsFragment
+import gunixun.dictionary.ui.history.HistoryFragment
 
 class MainActivity :
     AppCompatActivity(),
@@ -23,6 +24,7 @@ class MainActivity :
         if (savedInstanceState == null) {
             setHomePage()
         }
+        initBottomNavigationView()
     }
 
     private fun navigationTo(fragment: Fragment, withTransaction: Boolean = false) {
@@ -55,6 +57,7 @@ class MainActivity :
                     true
                 }
                 R.id.bottom_view_history -> {
+                    navigationTo(HistoryFragment.newInstance())
                     true
                 }
                 else -> true
@@ -63,6 +66,6 @@ class MainActivity :
     }
 
     override fun openTranslationDetailsScreen(data: DataModel) {
-        navigationTo(TranslationDetailsFragment.newInstance(data), true)
+        navigationTo(DetailsFragment.newInstance(data), true)
     }
 }

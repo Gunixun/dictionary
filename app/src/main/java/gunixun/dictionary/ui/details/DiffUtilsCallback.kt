@@ -1,11 +1,11 @@
-package gunixun.dictionary.ui.translation
+package gunixun.dictionary.ui.details
 
 import androidx.recyclerview.widget.DiffUtil
-import gunixun.dictionary.domain.entities.DataModel
+import gunixun.dictionary.domain.entities.Meaning
 
 class DiffUtilsCallback (
-    private val newItems: List<DataModel>,
-    private val oldItems: List<DataModel>
+    private val newItems: List<Meaning>,
+    private val oldItems: List<Meaning>
 ) :
     DiffUtil.Callback() {
 
@@ -20,7 +20,10 @@ class DiffUtilsCallback (
     override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean {
         val oldItem = oldItems[oldPos]
         val newItem = newItems[newPos]
-        return oldItem.text == newItem.text
-                && oldItem.meanings == newItem.meanings
+        return oldItem.translationText == newItem.translationText
+                && oldItem.translationNote == newItem.translationNote
+                && oldItem.previewUrl == newItem.previewUrl
+                && oldItem.imageUrl == newItem.imageUrl
+                && oldItem.transcription == newItem.transcription
     }
 }

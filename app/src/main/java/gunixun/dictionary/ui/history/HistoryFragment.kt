@@ -1,4 +1,4 @@
-package gunixun.dictionary.ui.translation
+package gunixun.dictionary.ui.history
 
 import android.os.Bundle
 import android.view.View
@@ -7,29 +7,32 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import gunixun.dictionary.R
-import gunixun.dictionary.databinding.FragmentTranslationBinding
-import gunixun.dictionary.domain.entities.DataModel
+import gunixun.dictionary.databinding.FragmentHistoryBinding
+import gunixun.dictionary.domain.entities.History
 import gunixun.dictionary.ui.BaseFragment
 import gunixun.dictionary.ui.utils.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 
-class TranslationFragment :
-    BaseFragment<FragmentTranslationBinding>(FragmentTranslationBinding::inflate) {
+class HistoryFragment :
+    BaseFragment<FragmentHistoryBinding>(FragmentHistoryBinding::inflate)
+{
+    private lateinit var adapter: HistoryAdapter
+    private val viewModel: HistoryContract.HistoryViewModel by viewModel()
 
-    private lateinit var adapter: TranslationAdapter
-    private val viewModel: TranslationContract.TranslationViewModel by viewModel()
-    private val controller by lazy { activity as Controller }
+    private var data: List<History> = arrayListOf()
 
     private var retryIter: Int = RESET_RETRY_ITER
     private var snackBar: Snackbar? = null
+    private val controller by lazy { activity as Controller }
 
     companion object {
-        fun newInstance() = TranslationFragment()
+        fun newInstance() = HistoryFragment()
     }
 
     interface Controller {
-        fun openDetailsScreen(data: DataModel)
+        fun openDetailsScreen(history: History)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,10 +40,12 @@ class TranslationFragment :
 
         setupUi()
         connectSignals()
+
+        viewModel.getAll()
     }
 
     private fun setupUi() {
-        adapter = TranslationAdapter {
+        adapter = HistoryAdapter {
             controller.openDetailsScreen(it)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(
@@ -49,18 +54,18 @@ class TranslationFragment :
             false
         )
         binding.recyclerView.adapter = adapter
-
     }
 
     private fun connectSignals() {
-        binding.wordSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.wordFilterSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                viewModel.findWord(query)
+                adapter.setData(filter(data, query))
                 return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                return false
+                adapter.setData(filter(data, newText))
+                return true
             }
         })
 
@@ -77,12 +82,13 @@ class TranslationFragment :
                 hideSnackBar(snackBar)
                 binding.progressBar.isVisible = true
             }
-            is AppState.Success -> {
+            is AppState.SuccessHistory -> {
                 retryIter = RESET_RETRY_ITER
                 if (appState.data.isEmpty()) {
                     binding.emptyTextView.isVisible = true
                 }
-                adapter.setData(appState.data)
+                data = appState.data
+                adapter.setData(filter(data, binding.wordFilterSearchView.query.toString()))
             }
             is AppState.Error -> {
                 binding.emptyTextView.isVisible = true
@@ -90,7 +96,7 @@ class TranslationFragment :
                     snackBar = binding.root.createErrSnackBar(
                         text = appState.error.toString(),
                         actionText = R.string.retry,
-                        { viewModel.findWord(binding.wordSearchView.query.toString()) }
+                        { viewModel.getAll() }
                     )
                     snackBar?.show()
                 } else {
@@ -104,4 +110,15 @@ class TranslationFragment :
         }
     }
 
+    private fun filter(models: List<History>, query: String): List<History> {
+        val lowerCaseQuery = query.lowercase(Locale.getDefault())
+        val filteredModelList: MutableList<History> = ArrayList()
+        for (model in models) {
+            val text: String = model.word.lowercase()
+            if (text.contains(lowerCaseQuery)) {
+                filteredModelList.add(model)
+            }
+        }
+        return filteredModelList
+    }
 }

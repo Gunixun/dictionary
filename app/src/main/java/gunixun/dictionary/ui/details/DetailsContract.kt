@@ -1,13 +1,13 @@
-package gunixun.dictionary.ui.translation
+package gunixun.dictionary.ui.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import gunixun.dictionary.ui.BaseViewModel
 import gunixun.dictionary.ui.utils.AppState
 
-class TranslationContract {
+class DetailsContract {
 
-    abstract class TranslationViewModel: BaseViewModel<AppState>() {
+    abstract class DetailsViewModel: BaseViewModel<AppState>() {
         abstract val data : LiveData<AppState>
         abstract  fun findWord(word: String)
     }

@@ -1,69 +1,62 @@
-package gunixun.dictionary.ui.translation
+package gunixun.dictionary.ui.details
 
 import android.os.Bundle
 import android.view.View
-import android.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import gunixun.dictionary.R
-import gunixun.dictionary.databinding.FragmentTranslationBinding
-import gunixun.dictionary.domain.entities.DataModel
+import gunixun.dictionary.databinding.FragmentDetailsBinding
 import gunixun.dictionary.ui.BaseFragment
 import gunixun.dictionary.ui.utils.*
+import gunixun.dictionary.ui.utils.MAX_RETRY_ITER
+import gunixun.dictionary.ui.utils.RESET_RETRY_ITER
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+class DetailsFragment :
+    BaseFragment<FragmentDetailsBinding>(FragmentDetailsBinding::inflate)
+{
 
-class TranslationFragment :
-    BaseFragment<FragmentTranslationBinding>(FragmentTranslationBinding::inflate) {
-
-    private lateinit var adapter: TranslationAdapter
-    private val viewModel: TranslationContract.TranslationViewModel by viewModel()
-    private val controller by lazy { activity as Controller }
+    private val viewModel: DetailsContract.DetailsViewModel by viewModel()
+    private lateinit var adapter: DetailsAdapter
+    private var word: String = ""
 
     private var retryIter: Int = RESET_RETRY_ITER
     private var snackBar: Snackbar? = null
 
     companion object {
-        fun newInstance() = TranslationFragment()
-    }
+        const val ARG_PARAM = "word"
 
-    interface Controller {
-        fun openDetailsScreen(data: DataModel)
+        fun newInstance(word: String): DetailsFragment {
+            return DetailsFragment().also { fragment ->
+                fragment.arguments = Bundle().also { bundle ->
+                    bundle.putString(ARG_PARAM, word)
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        word = arguments?.getString(ARG_PARAM, "").toString()
+
         setupUi()
         connectSignals()
+        viewModel.findWord(word)
     }
 
     private fun setupUi() {
-        adapter = TranslationAdapter {
-            controller.openDetailsScreen(it)
-        }
+        adapter = DetailsAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,
             false
         )
         binding.recyclerView.adapter = adapter
-
     }
 
     private fun connectSignals() {
-        binding.wordSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                viewModel.findWord(query)
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                return false
-            }
-        })
-
         viewModel.data.observe(viewLifecycleOwner) { state ->
             renderData(state)
         }
@@ -77,12 +70,14 @@ class TranslationFragment :
                 hideSnackBar(snackBar)
                 binding.progressBar.isVisible = true
             }
-            is AppState.Success -> {
+            is AppState.SuccessDataModel -> {
                 retryIter = RESET_RETRY_ITER
-                if (appState.data.isEmpty()) {
+                if (appState.data == null) {
                     binding.emptyTextView.isVisible = true
+                } else {
+                    binding.wordTextView.text = appState.data.text
+                    adapter.setData(appState.data.meanings)
                 }
-                adapter.setData(appState.data)
             }
             is AppState.Error -> {
                 binding.emptyTextView.isVisible = true
@@ -90,7 +85,7 @@ class TranslationFragment :
                     snackBar = binding.root.createErrSnackBar(
                         text = appState.error.toString(),
                         actionText = R.string.retry,
-                        { viewModel.findWord(binding.wordSearchView.query.toString()) }
+                        { viewModel.findWord(word) }
                     )
                     snackBar?.show()
                 } else {
@@ -103,5 +98,4 @@ class TranslationFragment :
             else -> {}
         }
     }
-
 }

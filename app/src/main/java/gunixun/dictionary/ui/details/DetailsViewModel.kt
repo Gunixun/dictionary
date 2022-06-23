@@ -1,13 +1,13 @@
-package gunixun.dictionary.ui.translation
+package gunixun.dictionary.ui.details
 
 import androidx.lifecycle.LiveData
 import gunixun.dictionary.domain.TranslationRepo
 import gunixun.dictionary.ui.utils.AppState
 import kotlinx.coroutines.*
 
-class TranslationViewModel(
+class DetailsViewModel(
     private val translationRepo: TranslationRepo,
-) : TranslationContract.TranslationViewModel() {
+) : DetailsContract.DetailsViewModel() {
     override val data: LiveData<AppState> = _liveData
 
     override fun findWord(word: String) {
@@ -18,7 +18,16 @@ class TranslationViewModel(
     }
 
     private suspend fun startFind(word: String) = withContext(Dispatchers.IO) {
-        _liveData.postValue(AppState.Success(translationRepo.getData(word)))
+        val res = translationRepo.getData(word)
+        if (res.isNotEmpty()){
+            _liveData.postValue(
+                AppState.SuccessDataModel(
+                    res[0]
+                )
+            )
+        } else {
+            _liveData.postValue(AppState.SuccessDataModel(null))
+        }
     }
 
     override fun handleError(error: Throwable) {

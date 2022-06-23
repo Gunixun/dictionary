@@ -5,9 +5,17 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import gunixun.dictionary.R
 import gunixun.dictionary.databinding.ActivityMainBinding
+import gunixun.dictionary.domain.entities.DataModel
+import gunixun.dictionary.domain.entities.History
 import gunixun.dictionary.ui.translation.TranslationFragment
+import gunixun.dictionary.ui.details.DetailsFragment
+import gunixun.dictionary.ui.history.HistoryFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity :
+    AppCompatActivity(),
+    TranslationFragment.Controller,
+    HistoryFragment.Controller
+{
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             setHomePage()
         }
+        initBottomNavigationView()
     }
 
     private fun navigationTo(fragment: Fragment, withTransaction: Boolean = false) {
@@ -40,5 +49,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun setHomePage() {
         navigationTo(TranslationFragment.newInstance())
+    }
+
+    private fun initBottomNavigationView() {
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.bottom_view_home -> {
+                    setHomePage()
+                    true
+                }
+                R.id.bottom_view_history -> {
+                    navigationTo(HistoryFragment.newInstance())
+                    true
+                }
+                else -> true
+            }
+        }
+    }
+
+    override fun openDetailsScreen(data: DataModel) {
+        navigationTo(DetailsFragment.newInstance(data.text), true)
+    }
+
+    override fun openDetailsScreen(history: History) {
+        navigationTo(DetailsFragment.newInstance(history.word), true)
     }
 }

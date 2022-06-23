@@ -16,7 +16,8 @@ fun convertReposDtoToEntity(dataModels: List<DataModelDto>): List<DataModel> {
                     translationText = meaning.translation.text ?: "",
                     translationNote = meaning.translation.note ?: "",
                     previewUrl = meaning.previewUrl,
-                    imageUrl = meaning.imageUrl
+                    imageUrl = meaning.imageUrl,
+                    transcription = meaning.transcription
                 )
             )
         }

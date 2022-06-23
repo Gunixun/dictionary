@@ -2,17 +2,17 @@ package gunixun.dictionary.ui.history
 
 import android.os.Bundle
 import android.view.View
+import android.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import gunixun.dictionary.R
 import gunixun.dictionary.databinding.FragmentHistoryBinding
-import gunixun.dictionary.domain.entities.DataModel
 import gunixun.dictionary.domain.entities.History
 import gunixun.dictionary.ui.BaseFragment
-import gunixun.dictionary.ui.translation.TranslationFragment
 import gunixun.dictionary.ui.utils.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 
 class HistoryFragment :
@@ -20,6 +20,8 @@ class HistoryFragment :
 {
     private lateinit var adapter: HistoryAdapter
     private val viewModel: HistoryContract.HistoryViewModel by viewModel()
+
+    private var data: List<History> = arrayListOf()
 
     private var retryIter: Int = RESET_RETRY_ITER
     private var snackBar: Snackbar? = null
@@ -55,6 +57,18 @@ class HistoryFragment :
     }
 
     private fun connectSignals() {
+        binding.wordFilterSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                adapter.setData(filter(data, query))
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                adapter.setData(filter(data, newText))
+                return true
+            }
+        })
+
         viewModel.data.observe(viewLifecycleOwner) { state ->
             renderData(state)
         }
@@ -73,7 +87,8 @@ class HistoryFragment :
                 if (appState.data.isEmpty()) {
                     binding.emptyTextView.isVisible = true
                 }
-                adapter.setData(appState.data)
+                data = appState.data
+                adapter.setData(filter(data, binding.wordFilterSearchView.query.toString()))
             }
             is AppState.Error -> {
                 binding.emptyTextView.isVisible = true
@@ -93,5 +108,17 @@ class HistoryFragment :
             }
             else -> {}
         }
+    }
+
+    private fun filter(models: List<History>, query: String): List<History> {
+        val lowerCaseQuery = query.lowercase(Locale.getDefault())
+        val filteredModelList: MutableList<History> = ArrayList()
+        for (model in models) {
+            val text: String = model.word.lowercase()
+            if (text.contains(lowerCaseQuery)) {
+                filteredModelList.add(model)
+            }
+        }
+        return filteredModelList
     }
 }

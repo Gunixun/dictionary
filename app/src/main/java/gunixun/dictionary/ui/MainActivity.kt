@@ -6,13 +6,15 @@ import androidx.fragment.app.Fragment
 import gunixun.dictionary.R
 import gunixun.dictionary.databinding.ActivityMainBinding
 import gunixun.dictionary.domain.entities.DataModel
+import gunixun.dictionary.domain.entities.History
 import gunixun.dictionary.ui.translation.TranslationFragment
 import gunixun.dictionary.ui.details.DetailsFragment
 import gunixun.dictionary.ui.history.HistoryFragment
 
 class MainActivity :
     AppCompatActivity(),
-    TranslationFragment.Controller
+    TranslationFragment.Controller,
+    HistoryFragment.Controller
 {
     private lateinit var binding: ActivityMainBinding
 
@@ -65,7 +67,11 @@ class MainActivity :
         }
     }
 
-    override fun openTranslationDetailsScreen(data: DataModel) {
-        navigationTo(DetailsFragment.newInstance(data), true)
+    override fun openDetailsScreen(data: DataModel) {
+        navigationTo(DetailsFragment.newInstance(data.text), true)
+    }
+
+    override fun openDetailsScreen(history: History) {
+        navigationTo(DetailsFragment.newInstance(history.word), true)
     }
 }

@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import gunixun.dictionary.R
 import gunixun.dictionary.databinding.FragmentHistoryBinding
+import gunixun.dictionary.domain.entities.DataModel
+import gunixun.dictionary.domain.entities.History
 import gunixun.dictionary.ui.BaseFragment
+import gunixun.dictionary.ui.translation.TranslationFragment
 import gunixun.dictionary.ui.utils.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -20,9 +23,14 @@ class HistoryFragment :
 
     private var retryIter: Int = RESET_RETRY_ITER
     private var snackBar: Snackbar? = null
+    private val controller by lazy { activity as Controller }
 
     companion object {
         fun newInstance() = HistoryFragment()
+    }
+
+    interface Controller {
+        fun openDetailsScreen(history: History)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,7 +43,9 @@ class HistoryFragment :
     }
 
     private fun setupUi() {
-        adapter = HistoryAdapter()
+        adapter = HistoryAdapter {
+            controller.openDetailsScreen(it)
+        }
         binding.recyclerView.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,

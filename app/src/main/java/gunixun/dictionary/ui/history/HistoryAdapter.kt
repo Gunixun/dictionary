@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import gunixun.dictionary.domain.entities.History
 
 
-class HistoryAdapter() : RecyclerView.Adapter<HistoryViewHolder>() {
+class HistoryAdapter(
+    private val itemClickCallback: (History) -> Unit
+) : RecyclerView.Adapter<HistoryViewHolder>() {
 
     private var listData: MutableList<History> = arrayListOf()
 
@@ -24,7 +26,7 @@ class HistoryAdapter() : RecyclerView.Adapter<HistoryViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-        holder.bind(listData[position])
+        holder.bind(listData[position], itemClickCallback)
     }
 
     override fun getItemCount() = listData.size

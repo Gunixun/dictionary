@@ -9,6 +9,8 @@ import gunixun.dictionary.data.room.RoomTranslationLocalRepoImpl
 import gunixun.dictionary.data.room.dao.HistoryDao
 import gunixun.dictionary.domain.TranslationLocalRepo
 import gunixun.dictionary.domain.TranslationRepo
+import gunixun.dictionary.ui.details.DetailsContract
+import gunixun.dictionary.ui.details.DetailsViewModel
 import gunixun.dictionary.ui.history.HistoryContract
 import gunixun.dictionary.ui.history.HistoryViewModel
 import gunixun.dictionary.ui.translation.TranslationContract
@@ -65,6 +67,16 @@ val mainScreen = module {
         )
     }
 }
+
+val detailsScreen = module {
+
+    viewModel<DetailsContract.DetailsViewModel> {
+        DetailsViewModel(
+            translationRepo = get(named(REMOTE_DB))
+        )
+    }
+}
+
 
 val historyScreen = module {
 

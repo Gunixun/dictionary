@@ -20,9 +20,12 @@ class HistoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 
-    fun bind(history: History) {
+    fun bind(history: History, listener: (History) -> Unit) {
         FragmentHistoryItemBinding.bind(itemView).apply {
             wordTextView.text = history.word
+            itemView.setOnClickListener {
+                listener.invoke(history)
+            }
         }
     }
 }

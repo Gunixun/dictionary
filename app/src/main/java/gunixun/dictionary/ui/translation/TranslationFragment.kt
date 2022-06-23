@@ -29,7 +29,7 @@ class TranslationFragment :
     }
 
     interface Controller {
-        fun openTranslationDetailsScreen(data: DataModel)
+        fun openDetailsScreen(data: DataModel)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,7 +41,7 @@ class TranslationFragment :
 
     private fun setupUi() {
         adapter = TranslationAdapter {
-            controller.openTranslationDetailsScreen(it)
+            controller.openDetailsScreen(it)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(
             requireContext(),

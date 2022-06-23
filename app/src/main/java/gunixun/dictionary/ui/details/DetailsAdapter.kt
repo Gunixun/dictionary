@@ -1,11 +1,11 @@
-package gunixun.dictionary.ui.translation_details
+package gunixun.dictionary.ui.details
 
 import android.view.ViewGroup
 
 import androidx.recyclerview.widget.RecyclerView
 import gunixun.dictionary.domain.entities.Meaning
 
-class TranslationDetailsAdapter() : RecyclerView.Adapter<TranslationDetailsViewHolder>() {
+class DetailsAdapter() : RecyclerView.Adapter<TranslationDetailsViewHolder>() {
 
     private var listData: MutableList<Meaning> = arrayListOf()
 

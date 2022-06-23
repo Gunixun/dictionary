@@ -1,24 +1,24 @@
-package gunixun.dictionary.ui.translation_details
+package gunixun.dictionary.ui.details
 
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import gunixun.dictionary.databinding.FragmentTranslationDetailsBinding
+import gunixun.dictionary.databinding.FragmentDetailsBinding
 import gunixun.dictionary.domain.entities.DataModel
 import gunixun.dictionary.ui.BaseFragment
 
-class TranslationDetailsFragment :
-    BaseFragment<FragmentTranslationDetailsBinding>(FragmentTranslationDetailsBinding::inflate)
+class DetailsFragment :
+    BaseFragment<FragmentDetailsBinding>(FragmentDetailsBinding::inflate)
 {
 
-    private lateinit var adapter: TranslationDetailsAdapter
+    private lateinit var adapter: DetailsAdapter
     var dataModel: DataModel? = null
 
     companion object {
         const val ARG_PARAM = "data_model"
 
-        fun newInstance(data: DataModel): TranslationDetailsFragment {
-            return TranslationDetailsFragment().also { fragment ->
+        fun newInstance(data: DataModel): DetailsFragment {
+            return DetailsFragment().also { fragment ->
                 fragment.arguments = Bundle().also { bundle ->
                     bundle.putParcelable(ARG_PARAM, data)
                 }
@@ -40,7 +40,7 @@ class TranslationDetailsFragment :
     }
 
     private fun setupUi() {
-        adapter = TranslationDetailsAdapter()
+        adapter = DetailsAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,

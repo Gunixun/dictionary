@@ -1,0 +1,34 @@
+package gunixun.details
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import gunixun.details.databinding.FragmentDetailsItemBinding
+import gunixun.model.Meaning
+
+const val httpsString = "https:"
+
+class DetailsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    companion object {
+        fun createView(parent: ViewGroup): DetailsViewHolder {
+            val binding = FragmentDetailsItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            return DetailsViewHolder(binding.root)
+        }
+    }
+
+    fun bind(meaning: Meaning) {
+        FragmentDetailsItemBinding.bind(itemView).apply {
+            wordTextView.text = meaning.translationText
+            noteTextView.text = meaning.translationNote
+            transcriptionTextView.text = meaning.transcription
+            previewImageView.load(httpsString + meaning.previewUrl)
+        }
+    }
+}

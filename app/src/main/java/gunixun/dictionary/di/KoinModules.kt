@@ -1,28 +1,24 @@
 package gunixun.dictionary.di
 
 import androidx.room.Room
-import gunixun.dictionary.data.TranslationRepoImpl
-import gunixun.dictionary.data.retrofit.SkyEngApi
-import gunixun.dictionary.data.retrofit.SkyEngTranslationRepoImpl
-import gunixun.dictionary.data.room.HistoryDataBase
-import gunixun.dictionary.data.room.RoomTranslationLocalRepoImpl
-import gunixun.dictionary.data.room.dao.HistoryDao
-import gunixun.dictionary.domain.TranslationLocalRepo
-import gunixun.dictionary.domain.TranslationRepo
-import gunixun.dictionary.ui.details.DetailsContract
-import gunixun.dictionary.ui.details.DetailsViewModel
-import gunixun.dictionary.ui.history.HistoryContract
-import gunixun.dictionary.ui.history.HistoryViewModel
-import gunixun.dictionary.ui.translation.TranslationContract
+import gunixun.details.DetailsContract
+import gunixun.details.DetailsViewModel
+import gunixun.history.HistoryContract
+import gunixun.history.HistoryViewModel
+import gunixun.repository.TranslationLocalRepo
+import gunixun.repository.retrofit.SkyEngApi
+import gunixun.repository.TranslationRepo
+import gunixun.repository.TranslationRepoImpl
+import gunixun.repository.retrofit.SkyEngTranslationRepoImpl
+import gunixun.repository.room.HistoryDataBase
+import gunixun.repository.room.RoomTranslationLocalRepoImpl
+import gunixun.translation.TranslationContract
+import gunixun.translation.TranslationViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
-import gunixun.dictionary.ui.translation.TranslationViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Converter
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
@@ -34,14 +30,17 @@ val application = module {
     single {
         Retrofit.Builder()
             .baseUrl(get<String>(named(API_URL)))
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(get())
             .build()
     }
     factory<Converter.Factory> { GsonConverterFactory.create() }
 
     single { get<Retrofit>().create(SkyEngApi::class.java) }
-    single<TranslationRepo>(named(REMOTE_DB)) { SkyEngTranslationRepoImpl(api = get()) }
+    single<TranslationRepo>(named(REMOTE_DB)) {
+        SkyEngTranslationRepoImpl(
+            api = get()
+        )
+    }
 
     single { Room.databaseBuilder(get(), HistoryDataBase::class.java, "HistoryDB").build() }
     single { get<HistoryDataBase>().historyDao() }

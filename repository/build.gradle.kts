@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
 }
@@ -8,26 +8,19 @@ android {
     compileSdk = 32
 
     defaultConfig {
-        applicationId = "gunixun.dictionary"
         minSdk = 21
         targetSdk = 32
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                argument("room.schemaLocation", "$projectDir/schemas")
-            }
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }
@@ -38,20 +31,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    buildFeatures {
-        viewBinding = true
-    }
 }
 
 dependencies {
-
-    implementation(project(Modules.core))
-    implementation(project(Modules.detailsScreen))
-    implementation(project(Modules.historyScreen))
-    implementation(project(Modules.translationScreen))
     implementation(project(Modules.model))
-    implementation(project(Modules.repository))
 
     // Retrofit
     implementation(Retrofit.CORE)

@@ -5,11 +5,11 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import gunixun.dictionary.R
 import gunixun.dictionary.databinding.ActivityMainBinding
-import gunixun.dictionary.domain.entities.DataModel
-import gunixun.dictionary.domain.entities.History
-import gunixun.dictionary.ui.translation.TranslationFragment
-import gunixun.dictionary.ui.details.DetailsFragment
-import gunixun.dictionary.ui.history.HistoryFragment
+import gunixun.translation.TranslationFragment
+import gunixun.details.DetailsFragment
+import gunixun.history.HistoryFragment
+import gunixun.model.DataModel
+import gunixun.model.History
 
 class MainActivity :
     AppCompatActivity(),

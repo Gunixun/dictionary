@@ -14,3 +14,10 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Dictionary"
 include ':app'
+include ':core'
+include ':details'
+include ':history'
+include ':utils'
+include ':repository'
+include ':translation'
+include ':model'

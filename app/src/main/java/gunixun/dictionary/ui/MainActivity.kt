@@ -3,25 +3,28 @@ package gunixun.dictionary.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import gunixun.dictionary.R
-import gunixun.dictionary.databinding.ActivityMainBinding
 import gunixun.translation.TranslationFragment
 import gunixun.details.DetailsFragment
 import gunixun.history.HistoryFragment
 import gunixun.model.DataModel
 import gunixun.model.History
+import gunixun.utils.viewById
 
 class MainActivity :
     AppCompatActivity(),
     TranslationFragment.Controller,
     HistoryFragment.Controller
 {
-    private lateinit var binding: ActivityMainBinding
+
+    private val bottomNavigationView by viewById<BottomNavigationView>(R.id.bottom_navigation_view)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
             setHomePage()
@@ -52,7 +55,7 @@ class MainActivity :
     }
 
     private fun initBottomNavigationView() {
-        binding.bottomNavigationView.setOnItemSelectedListener {
+        bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.bottom_view_home -> {
                     setHomePage()

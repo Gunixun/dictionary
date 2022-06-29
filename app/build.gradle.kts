@@ -52,6 +52,7 @@ dependencies {
     implementation(project(Modules.translationScreen))
     implementation(project(Modules.model))
     implementation(project(Modules.repository))
+    implementation(project(Modules.utils))
 
     // Retrofit
     implementation(Retrofit.CORE)

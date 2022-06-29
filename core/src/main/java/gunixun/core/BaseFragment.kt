@@ -6,9 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.newScope
+import org.koin.core.scope.Scope
 
 abstract class BaseFragment<VB : ViewBinding>(private val bindingInflater: (inflater: LayoutInflater) -> VB) :
-    Fragment() {
+    Fragment(), KoinScopeComponent {
+
+    override val scope: Scope by newScope()
 
     private var _binding: VB? = null
     protected val binding: VB
@@ -26,6 +31,7 @@ abstract class BaseFragment<VB : ViewBinding>(private val bindingInflater: (infl
     }
 
     override fun onDestroy() {
+        closeScope()
         super.onDestroy()
         _binding = null
     }

@@ -13,6 +13,7 @@ import gunixun.utils.*
 import gunixun.utils.R
 import gunixun.utils.AppState
 import gunixun.utils.hideSnackBar
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailsFragment :
@@ -20,7 +21,7 @@ class DetailsFragment :
 {
 
     private val viewModel: DetailsContract.DetailsViewModel by viewModel()
-    private lateinit var adapter: DetailsAdapter
+    private val adapter: DetailsAdapter by inject()
     private var word: String = ""
 
     private var retryIter: Int = RESET_RETRY_ITER
@@ -49,7 +50,6 @@ class DetailsFragment :
     }
 
     private fun setupUi() {
-        adapter = DetailsAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,

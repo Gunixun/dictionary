@@ -37,6 +37,8 @@ android {
 }
 
 dependencies {
+    implementation(Koin.ANDROID)
+
     implementation(Kotlin.CORE)
     implementation(Kotlin.COROUTINES_CORE)
     implementation(Design.APPCOMPAT)
